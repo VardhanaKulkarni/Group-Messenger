@@ -144,7 +144,6 @@ public class GroupMessengerActivity extends Activity {
                     in[i] = new BufferedReader(new InputStreamReader(socket[i].getInputStream()));
 
                     String response = "";
-                    Log.e("vardhana 123",msgToSend);
                     if (!(msgToSend == null)) {
                         out[i].println(strb);
                         out[i].flush();
