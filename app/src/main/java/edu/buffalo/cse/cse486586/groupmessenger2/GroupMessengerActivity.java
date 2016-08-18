@@ -196,12 +196,12 @@ public class GroupMessengerActivity extends Activity {
                         }
                     }
                 } catch (org.apache.http.conn.ConnectTimeoutException e) {
-                    Log.e("mycatch", "Socket time our exception");
+                    Log.e("TimeOut Exception", "Socket time our exception");
                 } catch (ConnectException e) {
                     Log.e("mycatch", "ClientTask Connect Exception");
                 } catch (SocketTimeoutException e) {
                     failure = i;
-                    Log.e("mycatch", "sockettimeout"+ failure); Integer[] val = map.get(msgkey);
+                    Log.e("Exception", "sockettimeout"+ failure); Integer[] val = map.get(msgkey);
                     val[0]++;
                     map.put(msgkey, val);
                     if (i == 4) {
@@ -217,11 +217,10 @@ public class GroupMessengerActivity extends Activity {
                         continue;
                     }
                 } catch (IOException e) {
-                    Log.e("mycatch", "ClientTask socket IOException" + e.getMessage());
+                    Log.e("Exception", "ClientTask socket IOException" + e.getMessage());
                 } catch (Exception e) {
-                    Log.e("mycatch", "some exception");
+                    Log.e("Exception", "some exception");
                 }
-                Log.e(TAG, "Exiting  the client task");
             }
             msgId++;
             return null;
@@ -279,8 +278,6 @@ public class GroupMessengerActivity extends Activity {
                     String[] test = msgReceived.split("%");
 
                     if (test[0].equals("M")) {
-                        // Log.e(TAG, "I entered the message handler");
-                        //Log.e("from handler2", Float.toString(propNum));
                         String msg[] = msgReceived.split("%");
                         String tag = msg[0];
                         String mssg = msg[1];
@@ -289,7 +286,6 @@ public class GroupMessengerActivity extends Activity {
                         String[] iport = mkey.split("-");
                         String mport = iport[0];
                         String mId = iport[1];
-                        //propNum = Float.valueOf(propNum + "." + mport);
                         proposalNum++;
                         myobj mObject = new myobj(mssg, mkey, 0);
                         holdQ.add(mObject);
