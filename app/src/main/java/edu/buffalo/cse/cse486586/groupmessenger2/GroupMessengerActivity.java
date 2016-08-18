@@ -35,8 +35,6 @@ import android.os.AsyncTask;
 /**
  * GroupMessengerActivity is the main Activity for the assignment.
  *
- * @author stevko
- *
  */
 
 public class GroupMessengerActivity extends Activity {
@@ -72,7 +70,6 @@ public class GroupMessengerActivity extends Activity {
         final String myPort = String.valueOf((Integer.parseInt(portStr) * 2));
         myport = myPort;
 
-        Log.e("from on-create",myport+"***********************");
         try {
             /* Create a server socket as well as a thread (AsyncTask) that listens on the server
             * port.*/
@@ -136,9 +133,7 @@ public class GroupMessengerActivity extends Activity {
             String strb = "M%"+msgToSend+"%"+msgkey;
 
             map.put(msgkey, new Integer[]{0, 0});
-            Log.e(TAG, msgPort);
-            Log.e(TAG, "Entering the client task");
-
+           
             for (int i = 0; i < 5; i++) {
                 try {
                     Log.e(TAG, "Entering the client task loop" + Integer.toString(i));
@@ -151,7 +146,6 @@ public class GroupMessengerActivity extends Activity {
                     String response = "";
                     Log.e("vardhana 123",msgToSend);
                     if (!(msgToSend == null)) {
-                        Log.e(TAG, "sending msg to  " + i +  "      "+strb);
                         out[i].println(strb);
                         out[i].flush();
                     }
@@ -161,7 +155,6 @@ public class GroupMessengerActivity extends Activity {
 
                     if (response == null) {
                         failure = i;
-                        Log.e("MY TAG", "Node failed " + i + " " + REMOTE_PORT[i] + " " + response);
                     }
 
                     if (response != null) {
@@ -175,10 +168,8 @@ public class GroupMessengerActivity extends Activity {
                         }
                         if (i == 4) {
                             Integer sendnum = map.get(res[0])[1];
-                            Log.e("CHECK FROM SERVER ", Integer.toString(sendnum));
                             pNumber = "P%" + msgkey + "%" + Float.toString(sendnum) + myport + "%" + Integer.toString(failure);
 
-                            Log.e("from client$$$$$$$$$$", pNumber);
                             for (int j = 0; j < 5; j++) {
                                 out[j].println(pNumber);
                                 out[j].flush();
@@ -186,21 +177,16 @@ public class GroupMessengerActivity extends Activity {
                         }
                     } else if (response == null) {
 
-                        Log.e("CLient", "Response is Null");
+                        
                         failure = i;
-                        Log.e("ffffailed node : ", REMOTE_PORT[i]);
                         Integer[] val = map.get(msgkey);
                         val[0]++;
-                        Log.e("from clo", Integer.toString(val[0]) + "++++++++++++++");
                         map.put(msgkey, val);
                         if (i == 4) {
                             Integer[] keys = map.get(msgkey);
-
                             Integer sendnum = keys[1];
-                            Log.e("CHECK FROM SERVER ", Integer.toString(sendnum));
                             pNumber = "P%" + msgkey + "%" + Float.toString(sendnum) + myport + "%" + Integer.toString(failure);
 
-                            Log.e("from client$$$$$$$$$$", pNumber);
                             for (int j = 0; j < 5; j++) {
                                 out[j].println(pNumber);
                                 out[j].flush();
@@ -217,16 +203,12 @@ public class GroupMessengerActivity extends Activity {
                     failure = i;
                     Log.e("mycatch", "sockettimeout"+ failure); Integer[] val = map.get(msgkey);
                     val[0]++;
-                    Log.e("from clo", Integer.toString(val[0]) + "++++++++++++++");
                     map.put(msgkey, val);
                     if (i == 4) {
                         Integer[] keys = map.get(msgkey);
-
                         Integer sendnum = keys[1];
-                        Log.e("CHECK FROM SERVER ", Integer.toString(sendnum));
                         pNumber = "P%" + msgkey + "%" + Float.toString(sendnum) + myport + "%" + Integer.toString(failure);
 
-                        Log.e("from client$$$$$$$$$$", pNumber);
                         for (int j = 0; j < 5; j++) {
                             out[j].println(pNumber);
                             out[j].flush();
@@ -256,7 +238,6 @@ public class GroupMessengerActivity extends Activity {
                 while(true){
                     Socket Csocket = serverSocket.accept();
                     handlemsg(Csocket);
-                    //new Thread(new handleSocket(Csocket)).start();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "serverTask socket IOException");
@@ -284,7 +265,6 @@ public class GroupMessengerActivity extends Activity {
 
         public void handlemsg(Socket Csocket){
             try {
-                // Log.e(TAG, "I entered the handler");
                 BufferedReader in = new BufferedReader(new InputStreamReader(Csocket.getInputStream()));
                 PrintWriter out = new PrintWriter(Csocket.getOutputStream());
                 String msgReceived = "";
@@ -294,7 +274,6 @@ public class GroupMessengerActivity extends Activity {
                     msgReceived = in.readLine();
                     if(msgReceived == null)
                         break;
-                    Log.e("from handler1", msgReceived + "debug");
                     publishProgress(msgReceived);
 
                     String[] test = msgReceived.split("%");
@@ -313,8 +292,6 @@ public class GroupMessengerActivity extends Activity {
                         //propNum = Float.valueOf(propNum + "." + mport);
                         proposalNum++;
                         myobj mObject = new myobj(mssg, mkey, 0);
-                        Log.e("ADDING QUEUEUEUU", mObject.message+ " " + mObject.msgID);
-                        Log.v("THE PROPOSED NUM IS :", Float.toString(proposalNum));
                         holdQ.add(mObject);
 
 
@@ -322,14 +299,11 @@ public class GroupMessengerActivity extends Activity {
 
                         out.println(propStr + "\r\n");
                         out.flush();
-
-                        Log.e("from handler", "exiting");
                     } else if (msgReceived.charAt(0) == 'P') {
                         String[] msgNum = msgReceived.split("%");
                         String hsKey = msgNum[1];
                         String SrecievedAggNum = msgNum[2];
                         String Failednode = msgNum[3];
-                        Log.v("THE AGREED MSG NUM :",SrecievedAggNum);
                         recievedAggNum = Float.valueOf(SrecievedAggNum);
                             int receivedInt = (int)(recievedAggNum);
 
@@ -340,23 +314,14 @@ public class GroupMessengerActivity extends Activity {
                         Iterator<myobj> iterr = holdQ.iterator();
 
                         while (iterr.hasNext()) {
-                            Log.e("from Iterator", " checking for msgkey");
                             curObj = iterr.next();
-                            Log.e(curObj.msgID, hsKey + "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-
                             if (curObj.msgID.equals(hsKey)) {
-                                Log.e("From Q", "changing Q");
                                 holdQ.remove(curObj);
-                                Log.e("changing queue", "now");
                                 curObj.propNum = recievedAggNum;
                                 curObj.deliverable = true;
-
-                                Log.e("from queue2" + curObj.msgID, Boolean.toString(curObj.deliverable));
                                 holdQ.add(curObj);
-
                                 break;
                             }
-                            Log.e("Iterating  again", "in while");
                         }
                         Iterator<myobj> iterr2 = holdQ.iterator();
 
@@ -365,9 +330,7 @@ public class GroupMessengerActivity extends Activity {
                                     Currrobj = iterr2.next();
                                     String ID = Currrobj.msgID;
                                     String[] ids = ID.split("[-]");
-                                    Log.e("vardhana",ids[0]);
                                     if(ids[0].equals(REMOTE_PORT[Integer.valueOf(Failednode)])){
-                                        Log.e("Kulkarni","deleting");
                                         holdQ.remove(Currrobj);
                                     }
                                 }
@@ -375,8 +338,7 @@ public class GroupMessengerActivity extends Activity {
 
                             while (!holdQ.isEmpty() && holdQ.peek().deliverable) {
                                 myobj delMsg = holdQ.poll();
-                                Log.v("Adding the msg",delMsg.message+"    "+Integer.toString(seqNumber) +"  " + delMsg.propNum);
-
+                                
                                 final ContentResolver mContentResolver = getContentResolver();
                                 final Uri mUri = buildUri("content", "edu.buffalo.cse.cse486586.groupmessenger2.provider");
 
@@ -384,10 +346,8 @@ public class GroupMessengerActivity extends Activity {
                                 ContentValues cv = new ContentValues();
                                 cv.put("key", Integer.toString(seqNumber));
                                 cv.put("value", delMsg.message);
-                                Log.e("insert",delMsg.message);
                                 mContentResolver.insert(mUri, cv);
                                 seqNumber++;
-                                Log.e("Saved the msg", "from ");
                             }
                             //The read terminates when the server receives the agreed sequence number from the client
                             break;
